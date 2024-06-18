@@ -49,3 +49,8 @@ JOIN faults f ON r.fault_id = f.fault_id
 GROUP BY r.fault_id, f.name
 ORDER BY request_count DESC
 ```
+![](https://i.postimg.cc/G2fpKWVd/ERD-2.png)
+Расчет количества заявок
+![](https://i.postimg.cc/c1K7W0s7/vsdx.png)
+учет заявок на ремонт бытовой техники
+![](https://i.postimg.cc/YjKCK1tP/image.png)
