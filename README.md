@@ -29,25 +29,23 @@ ALTER TABLE status_request CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci
 ```
 ## Количество выполненных заявок
 ```SQL
-SELECT COUNT(*) AS `Количество выполненных заказов`
+SELECT COUNT(*) AS completed_requests
 FROM requests
-JOIN status_request ON requests.status_id = status_request.status_id
-WHERE status_request.name = 'Готово к выдаче';
+WHERE status_id = 2;
 ```
 ## Среднее вермя выполнения заказа
 ```SQL
-SELECT AVG(DATEDIFF(date_out, date_in)) AS `Средение время выполнения заказа`
+SELECT request_id, 
+       DATEDIFF(date_out, date_in) AS completion_time
 FROM requests
-JOIN status_request ON requests.status_id = status_request.status_id
-WHERE status_request.name = 'Готово к выдаче';
+WHERE status_id = 2;
 ```
 ## Статистика по типам несиправностей
 ```SQL
-SELECT faults.name AS `Тип неисправности`, COUNT(requests.request_id) AS `Количество заявок`
-FROM
-    requests
-JOIN
-    faults ON requests.fault_id = faults.fault_id
-GROUP BY
-    faults.name;
+SELECT f.name AS fault_name, 
+       COUNT(r.request_id) AS request_count
+FROM requests r
+JOIN faults f ON r.fault_id = f.fault_id
+GROUP BY r.fault_id, f.name
+ORDER BY request_count DESC
 ```
