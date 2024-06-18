@@ -1,26 +1,32 @@
-# Web Automation 
+# Web Automation
+
 Dashboard Overview The Web Automation Dashboard is a sophisticated web application designed to automate and manage various web-based tasks. Developed using Python and the Flet framework, this project aims to provide a seamless experience for automating repetitive web actions, with a robust backend supported by ClickHouse for data storage.
 
 Features- Task Automation: Users can configure and schedule tasks for automation.
+
 - Real-Time Monitoring: Live updates and monitoring of task execution.
 - Customizable Workflows: Flexibility to create custom automation sequences.
 - Performance Analytics: Detailed reports and analytics on task performance.
 - User Management: Admin panel for managing user access and roles.
 
 Technologies- Python: The core programming language used for developing the application logic.
+
 - Flet: Employs the Flet framework for building a modern, event-driven user interface.
 - ClickHouse: Utilizes ClickHouse for its high-performance analytical database capabilities.
 - Docker: Leverages Docker for consistent deployment and scalability.
 - Git: Implements Git for source code management and version control.
 
 Challenges- Scalability: Ensuring the application can handle a growing number of tasks and users.
+
 - User Experience: Balancing between advanced features and maintaining an intuitive UI.
 - Data Integrity: Guaranteeing the accuracy and consistency of data throughout the application.
 
 Future Enhancements- API Integration: Expanding the application's capabilities by integrating with various APIs.
+
 - Machine Learning: Incorporating machine learning algorithms to optimize task automation.
 - Cross-Platform Support: Developing a cross-platform application for wider accessibility.
-This project is a testament to the power of modern web technologies in creating efficient and user-friendly applications for task automation. It showcases the potential of Python and Flet in web development, while ClickHouse provides a solid foundation for data management. The use of Docker and Git further enhances the project's deployment and collaborative aspects, making it a robust solution for users and developers alike.
+  This project is a testament to the power of modern web technologies in creating efficient and user-friendly applications for task automation. It showcases the potential of Python and Flet in web development, while ClickHouse provides a solid foundation for data management. The use of Docker and Git further enhances the project's deployment and collaborative aspects, making it a robust solution for users and developers alike.
+
 ## Introduction
 
 In the digital age, software applications have become essential tools for productivity, entertainment, and communication. The process of creating these applications, however, can be complex and daunting, especially for those without extensive programming experience. This project aims to simplify the software development process by providing a platform that automates many of the routine tasks involved in creating a program, making software development more accessible to a broader audience.
@@ -77,23 +83,30 @@ CodeCompanion adheres to industry best practices in software development, includ
 CodeCompanion represents a significant step forward in democratizing software development. By providing tools and resources that streamline the development process, the project empowers individuals and organizations to create software applications that meet their needs without requiring extensive technical expertise. As technology continues to evolve, CodeCompanion will adapt and incorporate new features to remain at the forefront of innovation in software development.
 
 # Database query for this project
+
 ```SQL
 ALTER TABLE status_request CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
+
 ## Количество выполненных заявок
+
 ```SQL
 SELECT COUNT(*) AS completed_requests
 FROM requests
 WHERE status_id = 2;
 ```
+
 ## Среднее вермя выполнения заказа
+
 ```SQL
 SELECT request_id, 
        DATEDIFF(date_out, date_in) AS completion_time
 FROM requests
 WHERE status_id = 2;
 ```
+
 ## Статистика по типам несиправностей
+
 ```SQL
 SELECT f.name AS fault_name, 
        COUNT(r.request_id) AS request_count
@@ -102,17 +115,54 @@ JOIN faults f ON r.fault_id = f.fault_id
 GROUP BY r.fault_id, f.name
 ORDER BY request_count DESC
 ```
+## Вывод всей таблицы с заказами целиком
+```SQL
+SELECT 
+    r.request_id,
+    r.date_in,
+    r.date_out,
+    r.repair_parts,
+    t.name AS type_home_name,
+    m.name AS model_name,
+    f.name AS fault_name,
+    s.name AS status_name,
+    u.full_name AS master_name,
+    c.full_name AS client_name,
+    com.message AS comment_message
+FROM 
+    requests r
+LEFT JOIN 
+    type_home_tech t ON r.type_home_id = t.type_home_id
+LEFT JOIN 
+    model_home_tech m ON r.model_id = m.model_id
+LEFT JOIN 
+    faults f ON r.fault_id = f.fault_id
+LEFT JOIN 
+    status_requests s ON r.status_id = s.status_id
+LEFT JOIN 
+    users u ON r.master_id = u.user_id
+LEFT JOIN 
+    users c ON r.client_id = c.user_id
+LEFT JOIN 
+    comments com ON r.comment_id = com.comment_id;
+```
+
 # ER диаграмма
+
 ![](https://i.postimg.cc/G2fpKWVd/ERD-2.png)
 
 # Расчет количества заявок
+
 ![](https://i.postimg.cc/c1K7W0s7/vsdx.png)
 
 # Учет заявок на ремонт бытовой техники
+
 ![](https://i.postimg.cc/YjKCK1tP/image.png)
 
 # Forms
+
 ## main.py
+
 ```python
 from flet import *
 from pages.login import *
@@ -144,7 +194,9 @@ class Main(UserControl):
 # Запуск приложения
 app(target=Main)
 ```
+
 ## login.py
+
 ```python
 from flet import *
 from service.connection import *
@@ -157,7 +209,7 @@ class Login(Container):
         self.page.theme_mode = ThemeMode.LIGHT
         self.bgcolor=colors.DEEP_PURPLE
         self.expand=True
-        
+      
         self.login_box = Container(
             content=TextField(
                 label='Логин',
@@ -170,14 +222,14 @@ class Login(Container):
                 can_reveal_password=True
             )
         )
-        
+      
         self.alter_dialoge_error= AlertDialog(
             modal=True,
             title=Text('Ошибка'),
             content=Text('Вы ввели неверный логин или пароль'),
             actions=[TextButton('OK', on_click=self.cls_dialoge)],
         )
-        
+      
         self.content = Column(
             alignment='center',
             horizontal_alignment='center',
@@ -215,7 +267,7 @@ class Login(Container):
         self.page.dialog = self.alter_dialoge_error
         self.alter_dialoge_error.open = False
         self.page.update()
-    
+  
     def login(self, e):
         self.page.session.clear()
         cursor = conn.cursor()
@@ -229,7 +281,9 @@ class Login(Container):
                 return
         self.open_dialoge()
 ```
+
 ## home.py
+
 ```python
 from flet import *
 
@@ -374,7 +428,9 @@ class Home(Container):
             ]
         )
 ```
+
 ## type_home_tech.py
+
 ```python
 from flet import *
 from service.connection import *
@@ -386,7 +442,7 @@ class Type(Container):
         self.expand = True
         self.bgcolor = 'white'
         self.theme_mode = ThemeMode.LIGHT
-        
+      
         self.data_table = DataTable(
             columns = [
             DataColumn(Text("Код бытовой техники"), numeric=True),
@@ -397,20 +453,20 @@ class Type(Container):
             vertical_lines=border.BorderSide(1, 'black'),
             horizontal_lines=border.BorderSide(1,'black'),
         )
-        
+      
         self.add_new_box = Container(
             content=TextField(
                 label='Поле ввода',
                 width=200
             )
         )
-        
+      
         self.alter_dialoge_message = AlertDialog(
             title=Text("Информация"),
             content=Text("Данные были успешно добавлены в таблицу"),
             actions=[TextButton('OK', on_click=self.cls_dlg)],
         )
-        
+      
         self.content = Column(
             controls=[
                 Container(
@@ -482,13 +538,13 @@ class Type(Container):
             data_rows.append(data_row)
         self.data_table.rows = data_rows
         self.page.update()
-    
-    
+  
+  
     def cls_dlg(self,e):
         self.page.dialog = self.alter_dialoge_message
         self.alter_dialoge_message.open = False
         self.page.update()
-    
+  
     def insert_new(self,e):
         cursor = conn.cursor()
         cursor.execute(f"INSERT INTO type_home_tech(name) VALUES ('{self.add_new_box.content.value}')")
@@ -496,7 +552,9 @@ class Type(Container):
         self.add_new_box.content.value = ''
         self.show_type_home_tech()
 ```
+
 ## stats.py
+
 ```python
 from flet import *
 from service.connection import *
@@ -508,7 +566,7 @@ class Stats(Container):
         self.expand = True
         self.bgcolor = 'white'
         self.theme_mode = ThemeMode.LIGHT
-        
+      
         self.data_table = DataTable(
             columns = [],
             rows=[],
@@ -516,7 +574,7 @@ class Stats(Container):
             vertical_lines=border.BorderSide(1, 'black'),
             horizontal_lines=border.BorderSide(1,'black'),
         )
-        
+      
         self.dp_options = Container(
             content=Dropdown(
                 width=500,
@@ -528,13 +586,13 @@ class Stats(Container):
                 ]
             )
         )
-        
+      
         self.alter_dialoge_message = AlertDialog(
             title=Text("Предупреждение"),
             content=Text("Вы не выбрали шаблон"),
             actions=[TextButton('OK', on_click=self.cls_dlg)],
         )
-        
+      
         self.content = Column(
             controls=[
                 Container(
@@ -598,7 +656,7 @@ class Stats(Container):
         self.page.dialog = self.alter_dialoge_message
         self.alter_dialoge_message.open = False
         self.page.update()
-    
+  
     def generate_stats(self,e):
         if self.dp_options.content.value == 'Количество выполненных заказов':
             self.count_complete_requests()
@@ -610,7 +668,7 @@ class Stats(Container):
             self.page.dialog = self.alter_dialoge_message
             self.alter_dialoge_message.open = True
             self.page.update()
-    
+  
     def count_complete_requests(self):
         cursor = conn.cursor()
         cursor.execute("""
@@ -630,7 +688,7 @@ class Stats(Container):
         self.data_table.columns = data_columns
         self.data_table.rows = data_rows
         self.page.update()
-    
+  
     def avg_time_complete_requests(self):
         cursor = conn.cursor()
         cursor.execute("""
@@ -652,7 +710,7 @@ class Stats(Container):
         self.data_table.columns = data_columns
         self.data_table.rows = data_rows
         self.page.update()
-    
+  
     def fault_stats(self):
         cursor = conn.cursor()
         cursor.execute("""

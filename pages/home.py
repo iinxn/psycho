@@ -18,7 +18,8 @@ class Home(Container):
                     color='white',
                     bgcolor=colors.DEEP_PURPLE,
                     width=500,
-                    height=80
+                    height=80,
+                    on_click=lambda x:x == self.page.go('/requests')
                 )
             ),
             'type_home_box': Container(
