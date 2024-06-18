@@ -27,7 +27,8 @@ class Home(Container):
                     color='white',
                     bgcolor=colors.DEEP_PURPLE,
                     width=500,
-                    height=80
+                    height=80,
+                    on_click=lambda x:x == self.page.go('/type'),
                 )
             ),
             'model_home_box': Container(
@@ -81,7 +82,8 @@ class Home(Container):
                     text='Статистика',
                     color=colors.DEEP_PURPLE,
                     bgcolor='white',
-                    height=50
+                    height=50,
+                    on_click=lambda x:x == self.page.go('/stats')
                 )
             ),
         }

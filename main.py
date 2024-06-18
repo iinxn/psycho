@@ -1,6 +1,8 @@
 from flet import *
 from pages.login import *
 from pages.home import *
+from pages.handbooks.type_home_tech import *
+from pages.stats import *
 
 class Main(UserControl):
     def __init__(self, page:Page):
@@ -16,6 +18,8 @@ class Main(UserControl):
         new_page={
             '/login': Login,
             '/home': Home,
+            '/type':Type,
+            '/stats': Stats,
         }[self.page.route](self.page)
         self.page.views.clear()
         self.page.views.append(
